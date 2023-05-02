@@ -68,8 +68,9 @@ func (t *Time) Scan(value interface{}) (err error) {
 }
 
 func (t Time) Value() (driver.Value, error) {
-	year, month, day := time.Time(t).Date()
-	return time.Date(year, month, day, 0, 0, 0, 0, time.Time(t).Location()), nil
+	hour := time.Time(t).Hour()
+	minute := time.Time(t).Minute()
+	return time.Date(1, 1, 1, hour, minute, 0, 0, time.Time(t).Location()), nil
 }
 
 // GormDataType gorm common data type
