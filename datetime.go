@@ -39,7 +39,7 @@ func (d *Date) GobDecode(b []byte) error {
 
 func (d Date) MarshalJSON() ([]byte, error) {
 	if time.Time(d).IsZero() {
-		return nil, nil
+		return []byte(`""`), nil
 	}
 
 	return []byte(fmt.Sprintf(`"%s"`, time.Time(d).Format(DateLayout))), nil
@@ -88,7 +88,7 @@ func (t *Time) GobDecode(b []byte) error {
 
 func (t Time) MarshalJSON() ([]byte, error) {
 	if time.Time(t).IsZero() {
-		return nil, nil
+		return []byte(`""`), nil
 	}
 	return []byte(fmt.Sprintf(`"%s"`, time.Time(t).Format(TimeLayout))), nil
 }
