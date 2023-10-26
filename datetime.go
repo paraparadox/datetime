@@ -116,12 +116,12 @@ func (d *DateTime) Scan(value interface{}) (err error) {
 }
 
 func (d DateTime) Value() (driver.Value, error) {
-	return d, nil
+	return time.Time(d), nil
 }
 
 // GormDataType gorm common data type
 func (d DateTime) GormDataType() string {
-	return "datetime"
+	return "timestamp with time zone"
 }
 
 func (d DateTime) GobEncode() ([]byte, error) {
