@@ -103,3 +103,50 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 func (t Time) String() string {
 	return time.Time(t).Format(TimeLayout)
 }
+
+type DateTime time.Time
+
+const DateTimeLayout = time.RFC3339Nano
+
+func (d *DateTime) Scan(value interface{}) (err error) {
+	nullTime := &sql.NullTime{}
+	err = nullTime.Scan(value)
+	*d = DateTime(nullTime.Time)
+	return
+}
+
+func (d DateTime) Value() (driver.Value, error) {
+	return d, nil
+}
+
+// GormDataType gorm common data type
+func (d DateTime) GormDataType() string {
+	return "datetime"
+}
+
+func (d DateTime) GobEncode() ([]byte, error) {
+	return time.Time(d).GobEncode()
+}
+
+func (d *DateTime) GobDecode(b []byte) error {
+	return (*time.Time)(d).GobDecode(b)
+}
+
+func (d DateTime) MarshalJSON() ([]byte, error) {
+	if time.Time(d).IsZero() {
+		return []byte(`""`), nil
+	}
+
+	return []byte(fmt.Sprintf(`"%s"`, time.Time(d).Format(DateTimeLayout))), nil
+}
+
+func (d *DateTime) UnmarshalJSON(input []byte) error {
+	s := strings.Trim(string(input), `"`)
+	parsedDateTime, err := time.Parse(DateTimeLayout, s)
+	*d = DateTime(parsedDateTime)
+	return err
+}
+
+func (d DateTime) String() string {
+	return time.Time(d).Format(DateTimeLayout)
+}
